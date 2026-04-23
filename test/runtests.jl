@@ -1,7 +1,9 @@
 using Optikos
 using Test
 
-@testset "testing functions" begin
-  # Write your tests here.
+@testset "test functions" begin
   @test Optikos.operateOnXY() == 2
+end
+
+@testset "core functions" begin
 end
