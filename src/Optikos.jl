@@ -10,6 +10,8 @@ include("Utils.jl")
 #include("Optics/General.jl")
 #include("Optics/Ray.jl")
 #include("Optics/Wave.jl")
+#include("Optics/Fourier.jl")
+#include("Optics/Nonlinear.jl")
 #
 #include("Propagation/Fresnel.jl") # Fresnel diffraction
 #include("Propagation/Fraunhofer.jl") # Far-field / Fraunhofer diffraction
@@ -30,6 +32,10 @@ include("Utils.jl")
 #
 #include("Visualization/Plots.jl") 
 #include("Visualization/Animations.jl") 
+
+# TODO: Add file for Bluestein propagation method and chirp z transform
+# based on Hu et al. 2020 - Efficient Full-path optical calculation of scalar
+# and vector diffraction using the Bluestein method.
 
 function operateOnXY(x=1, y=2)
   println("This function is modified")
