@@ -1,10 +1,13 @@
 module Optikos
 
-# Basics
 # TODO: Create a proper project structure
 
+# Basics
 include("Constants.jl")
-include("Types.jl")
+include("Interfaces.jl")
+include("Types/Grids.jl")
+include("Types/Fields.jl")
+include("Types/Beams.jl")
 include("Utils.jl")
 
 #include("Optics/General.jl")
@@ -37,9 +40,13 @@ include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
 # based on Hu et al. 2020 - Efficient Full-path optical calculation of scalar
 # and vector diffraction using the Bluestein method.
 
-function operateOnXY(x=1, y=2)
-  println("This function is modified")
-  return x*y
-end
+export succ
+
+"""
+    succ(x)
+
+Return the number `x` plus `1`.
+"""
+succ(x) = x + 1
 
 end

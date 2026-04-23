@@ -2,7 +2,7 @@ using Optikos
 using Test
 
 @testset "test functions" begin
-  @test Optikos.operateOnXY() == 2
+  @test Optikos.succ(2) == 3
 end
 
 @testset "constants" begin
