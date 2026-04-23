@@ -5,5 +5,14 @@ using Test
   @test Optikos.operateOnXY() == 2
 end
 
-@testset "core functions" begin
+@testset "constants" begin
+end
+
+@testset "types" begin
+end
+
+@testset "utils" begin
+end
+
+@testset "beams" begin
 end

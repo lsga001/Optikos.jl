@@ -19,7 +19,7 @@ include("Utils.jl")
 #include("Propagation/BeamPropagation.jl") # BPM, split-step methods
 #
 #include("Beams/Gaussian.jl") # Gaussian beams, beam waist, Rayleigh range
-#include("Beams/Structured.jl") # LG, HG, Bessel, Airy beams
+include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
 #include("Beams/Polarization.jl") # Stokes params, Jones calculus, Mueller matrices
 #
 #include("Quantum/States.jl") 
