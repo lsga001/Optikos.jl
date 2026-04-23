@@ -1,0 +1,10 @@
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.12.6"
+manifest_format = "2.0"
+project_hash = "0f642879af56cc65be1b76efb8537b746b72d395"
+
+[[deps.Optikos]]
+path = "."
+uuid = "94154c6d-4466-4fcb-80cd-488809413af4"
+version = "1.0.0-DEV"
