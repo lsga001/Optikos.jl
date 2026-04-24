@@ -4,7 +4,7 @@ module Optikos
 
 # Basics
 include("Constants.jl")
-include("Interfaces.jl")
+include("Types/Abstract.jl")
 include("Types/Grids.jl")
 include("Types/Fields.jl")
 include("Types/Beams.jl")

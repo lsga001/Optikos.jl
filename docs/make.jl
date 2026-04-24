@@ -10,6 +10,7 @@ DocMeta.setdocmeta!(
 makedocs(
   sitename = "Optikos.jl", 
   modules = [Optikos],
+  checkdocs = :exports,
   pages = [
     "Home" => "index.md",
   ],

@@ -1,10 +1,10 @@
 """
-    ScalarField(E::Matrix{ComplexF64}, grid::TransverseGrid, λ::Float64)
+    ScalarField(U::Matrix{ComplexF64}, grid::TransverseGrid, λ::Float64)
 
 A transverse scalar field representation type.
 
 # Arguments
-- `E`: Complex amplitude [V/m]
+- `U`: Complex amplitude [V/m]
 - `grid`: A uniform transverse grid associated with the complex amplitude
 - `λ`: Wavelength [m]
 
@@ -23,21 +23,21 @@ julia> field = ScalarField(U, grid, λ);
 ```
 """
 struct ScalarField <: AbstractField
-  E :: Matrix{ComplexF64}     # Complex Amplitude [V/m]
+  U :: Matrix{ComplexF64}     # Complex Amplitude [V/m]
   grid :: TransverseGrid
   λ :: Float64                # Wavelength [m]
 
-  function ScalarField(E, grid, λ)
-    @assert size(E) == (grid.Nx, grid.Ny) "Field matrix size must match grid dimensions"
+  function ScalarField(U, grid, λ)
+    @assert size(U) == (grid.Nx, grid.Ny) "Field matrix size must match grid dimensions"
     @assert λ > 0 "Wavelength must be positive"
-    new(E, grid, λ)
+    new(U, grid, λ)
   end
 end
 
 # Fulfill AbstractField interface
 grid(f::ScalarField) = f.grid
 wavelength(f::ScalarField) = f.λ
-intensity(f::ScalarField) = abs2.(f.E)
+intensity(f::ScalarField) = abs2.(f.U)
 
 #struct 
 
