@@ -1,23 +1,25 @@
 """
-    TransverseGrid(x, y)
+    TransverseGrid(x::Vector{Float64}, y::Vector{Float64})
 
 A uniform transverse sampling grid for field representation.
 
 # Arguments
-- `x`: x-axis sample points [m], supplied as a range or vector
-- `y`: y-axis sample points [m], supplied as a range or vector
+- `x`: x-axis sample points [m]
+- `y`: y-axis sample points [m]
 
 # Fields
-- `x`, `y`: coordinate vectors [m]
-- `Nx`, `Ny`: number of sample points
-- `dx`, `dy`: sample spacing [m]
+- `x`, `y`: coordinate vectors [m] (Vector{Float64})
+- `Nx`, `Ny`: number of sample points (Int)
+- `dx`, `dy`: sample spacing [m] (Float64)
 
 # Examples
+
 ```jldoctest
-julia> grid = TransverseGrid(
-  range(-1e-3, 1e-3, length=256),
-  range(-1e-3, 1e-3, length=256)
-)
+julia> x = range(-1e-3, 1e-3, length=256);
+
+julia> y = range(-1e-3, 1e-3, length=256);
+
+julia> grid = TransverseGrid(x, y);
 ```
 """
 struct TransverseGrid <: AbstractGrid

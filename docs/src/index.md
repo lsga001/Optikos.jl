@@ -1,13 +1,32 @@
-# Optikos.jl documentation
+# Optikos.jl
 
-```@contents
+_A general purpose optics package for Julia._
+
+## Types
+
+### Grids
+```@docs
+TransverseGrid
+```
+
+### Fields
+```@docs
+ScalarField
+```
+
+### Beams
+```@docs
+GaussianBeam
+LGBeam
+HGBeam
 ```
 
 ## Functions
-
 ```@docs
-succ(x)
+evaluate
 ```
+
+## Manual Outline
 
 ## Index
 

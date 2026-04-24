@@ -40,13 +40,11 @@ include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
 # based on Hu et al. 2020 - Efficient Full-path optical calculation of scalar
 # and vector diffraction using the Bluestein method.
 
-export succ
+export AbstractGrid, AbstractField, AbstractBeam
+export grid, wavelength, intensity, evaluate
 
-"""
-    succ(x)
-
-Return the number `x` plus `1`.
-"""
-succ(x) = x + 1
+export TransverseGrid
+export ScalarField
+export GaussianBeam, LGBeam, HGBeam
 
 end

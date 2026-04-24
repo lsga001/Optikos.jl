@@ -1,6 +1,21 @@
 using Documenter, Optikos
 
-makedocs(sitename="Optikos.jl")
+DocMeta.setdocmeta!(
+    Optikos,
+    :DocTestSetup,
+    :(using Optikos);
+    recursive = true
+)
+
+makedocs(
+  sitename = "Optikos.jl", 
+  modules = [Optikos],
+  pages = [
+    "Home" => "index.md",
+  ],
+  repo = Remotes.GitHub("lsga001", "Optikos.jl"),
+)
 deploydocs(
-    repo = "github.com/lsga001/Optikos.jl.git",
+  repo = "github.com/lsga001/Optikos.jl.git",
+  devbranch = "main",  
 )
