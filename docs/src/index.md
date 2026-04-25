@@ -37,7 +37,7 @@ using CairoMakie
 
 grid = TransverseGrid(range(-1e-3, 1e-3, 256), range(-1e-3, 1e-3, 256))
 beam = GaussianBeam(200e-6, 632.8e-9)
-field = evaluate(beam, grid)
+field = evaluate(grid, beam)
 
 fig, ax, hm = heatmap(grid.x * 1e3, grid.y * 1e3, intensity(field))
 ax.xlabel = "x [mm]"
@@ -54,7 +54,7 @@ using CairoMakie
 
 grid = TransverseGrid(range(-1e-3, 1e-3, 256), range(-1e-3, 1e-3, 256))
 beam = LGBeam(200e-6, 632.8e-9, 0, 1)
-field = evaluate(beam, grid)
+field = evaluate(grid, beam)
 
 fig, ax, hm = heatmap(grid.x * 1e3, grid.y * 1e3, intensity(field))
 ax.xlabel = "x [mm]"
