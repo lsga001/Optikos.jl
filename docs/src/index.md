@@ -64,6 +64,16 @@ Colorbar(fig[1,2], hm)
 fig
 ```
 
+## Visualization
+```@docs
+fieldplot
+fieldplot!
+FieldPlot
+phaseplot
+phaseplot!
+PhasePlot
+```
+
 ## Index
 
 ```@index
