@@ -1,4 +1,35 @@
 """
+    SphericalBeam(λ::Float64, z; n_index=1.0)
+
+Analytical descriptor of a spherical beam.
+
+# Fields
+- `λ `: wavelength [m]
+- `z`: axial position of the transverse beam profile assuming origin at z=0 [m]
+- `n_index `: refractive index of the propagation medium
+
+# Examples
+```jldoctest
+julia> beam = SphericalBeam(632.8e-9, 0.1);
+```
+
+# References
+Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §2.2
+"""
+struct SphericalBeam <: AbstractBeam
+  λ   ::Float64
+  z  ::Float64
+  n_index   ::Float64
+
+  function SphericalBeam(λ, z; n_index=1.0)
+    @assert λ > 0 "Wavelength must be positive"
+    @assert abs(z) > 0 "Plane z-position must be nonzero"
+    @assert n_index > 0 "Refractive index must be positive"
+    new(λ, z, n_index)
+  end
+end
+
+"""
     GaussianBeam(w0::Float64, λ::Float64; z0=0.0, n_index=1.0)
 
 Analytical descriptor of a fundamental Gaussian beam (TEM₀₀).
@@ -26,7 +57,7 @@ Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.1
 struct GaussianBeam <: AbstractBeam
   w0  ::Float64
   λ   ::Float64
-  z0  ::Int
+  z0  ::Float64
   n_index   ::Float64
 
   function GaussianBeam(w0, λ; z0=0.0, n_index=1.0)

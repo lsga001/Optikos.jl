@@ -16,6 +16,7 @@ ScalarField
 
 ### Beams
 ```@docs
+SphericalBeam
 GaussianBeam
 LGBeam
 HGBeam

@@ -24,7 +24,7 @@ function Makie.plot!(fp::FieldPlot{<:Tuple{<:ScalarField}})
 end
 
 Makie.convert_arguments(::Type{<:Makie.Plot{fieldplot}}, field::ScalarField) = (field,)
-Makie.convert_arguments(::Type{<:Makie.Plot{fieldplot}}, grid::TransverseGrid, beam::AbstractBeam) = (evaluate(grid, beam),)
+Makie.convert_arguments(::Type{<:Makie.Plot{fieldplot}}, grid::TransverseGrid{<:Real}, beam::AbstractBeam) = (evaluate(grid, beam),)
 
 @recipe PhasePlot (field::ScalarField,) begin
     "Defines the units of the plot"
@@ -54,4 +54,4 @@ function Makie.plot!(pp::PhasePlot{<:Tuple{<:ScalarField}})
 end
 
 Makie.convert_arguments(::Type{<:Makie.Plot{phaseplot}}, field::ScalarField) = (field,)
-Makie.convert_arguments(::Type{<:Makie.Plot{phaseplot}}, grid::TransverseGrid, beam::AbstractBeam) = (evaluate(grid, beam),)
+Makie.convert_arguments(::Type{<:Makie.Plot{phaseplot}}, grid::TransverseGrid{<:Real}, beam::AbstractBeam) = (evaluate(grid, beam),)

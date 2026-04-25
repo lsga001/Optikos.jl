@@ -23,10 +23,54 @@ function _laguerre(n::Int, α::Real, x::Real) :: Real
   return L
 end
 
+"""
+    evaluate(grid::TransverseGrid{<:Real}, beam::SphericalBeam) -> ScalarField
 
+Sample a Spherical beam onto a transverse grid at the plane `z = z0`.
+
+The complex field amplitude at the waist (`z = 0`) is:
+
+```math
+U(r) = \\frac{A_0}{r}\\exp\\!\\left(-jkr\\right)
+```
+
+# Arguments
+- `grid`: [`TransverseGrid`](@ref) on which to sample
+- `beam`: [`GaussianBeam`](@ref) descriptor
+
+# Returns
+A [`ScalarField`](@ref) with unit peak amplitude at the waist.
+
+# Examples
+```jldoctest
+julia> grid  = TransverseGrid(range(-1e-3, 1e-3, 64), range(-1e-3, 1e-3, 64));
+
+julia> beam  = SphericalBeam(632.8e-9, 0.1);
+
+julia> field = evaluate(grid, beam);
+
+julia> size(field.U)
+(64, 64)
+```
+
+# References
+Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §2.2
+"""
+function evaluate(grid::TransverseGrid{<:Real}, beam::SphericalBeam) :: ScalarField
+  (; λ, z, n_index) = beam
+
+  k = 2π * n_index / λ
+  
+  X = grid.x'
+  Y = grid.y
+  r = @. sqrt(X^2 + Y^2 + z^2)
+
+  U = @. exp(-1im * k * r) / r
+  return ScalarField(U, grid, λ)
+end
 
 """
-    evaluate(grid::TransverseGrid, beam::GaussianBeam) -> ScalarField
+    evaluate(grid::TransverseGrid{<:Real}, beam::GaussianBeam) -> ScalarField
 
 Sample a Gaussian beam onto a transverse grid at the plane `z = z0`.
 
@@ -73,7 +117,7 @@ julia> size(field.U)
 # References
 Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.1
 """
-function evaluate(grid::TransverseGrid, beam::GaussianBeam) :: ScalarField
+function evaluate(grid::TransverseGrid{<:Real}, beam::GaussianBeam) :: ScalarField
   (; w0, λ, z0, n_index) = beam
 
   k = 2π * n_index / λ
@@ -99,7 +143,7 @@ end
 
 
 """
-    evaluate(grid::TransverseGrid, beam::LGBeam) -> ScalarField
+    evaluate(grid::TransverseGrid{<:Real}, beam::LGBeam) -> ScalarField
 
 Sample a Laguerre-Gaussian beam LG(p, l) onto a transverse grid at `z = z0`.
 
@@ -137,7 +181,7 @@ true
 Allen et al., *Phys. Rev. A* 45, 8185 (1992)
 Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.3
 """
-function evaluate(grid::TransverseGrid, beam::LGBeam) :: ScalarField
+function evaluate(grid::TransverseGrid{<:Real}, beam::LGBeam) :: ScalarField
     (; w0, λ, p, l, z0, n_index) = beam
 
     k  = 2π * n_index / λ

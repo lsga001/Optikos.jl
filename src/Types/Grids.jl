@@ -1,5 +1,5 @@
 """
-    TransverseGrid(x::Vector{Float64}, y::Vector{Float64})
+    TransverseGrid(x::Vector{Float64}[, y::Vector{Float64}])
 
 A uniform transverse sampling grid for field representation.
 
@@ -20,19 +20,26 @@ julia> x = range(-1e-3, 1e-3, length=256);
 julia> y = range(-1e-3, 1e-3, length=256);
 
 julia> grid = TransverseGrid(x, y);
+
+julia> grid = TransverseGrid(x);
 ```
 """
-struct TransverseGrid <: AbstractGrid
-  x :: Vector{Float64}
-  y :: Vector{Float64}
+struct TransverseGrid{T<:Real} <: AbstractGrid
+  x :: Vector{T}
+  y :: Vector{T}
   Nx :: Int
   Ny :: Int
-  dx :: Float64
-  dy :: Float64
+  dx :: T
+  dy :: T
 
-  function TransverseGrid(x, y)
+  function TransverseGrid(x::AbstractVector{T}, y::AbstractVector{T}) where {T<:Real}
     x = collect(x)
     y = collect(y)
-    new(x, y, length(x), length(y), x[2]-x[1], y[2]-y[1])
+    new{T}(x, y, length(x), length(y), x[2]-x[1], y[2]-y[1])
   end
+  
+end
+
+function TransverseGrid(x::AbstractVector{<:Real})
+  return TransverseGrid(x, x)
 end

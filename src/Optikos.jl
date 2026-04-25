@@ -46,6 +46,6 @@ export grid, wavelength, intensity, evaluate
 
 export TransverseGrid
 export ScalarField
-export GaussianBeam, LGBeam, HGBeam
+export SphericalBeam, GaussianBeam, LGBeam, HGBeam
 
 end

@@ -24,10 +24,10 @@ julia> field = ScalarField(U, grid, λ);
 """
 struct ScalarField <: AbstractField
   U :: Matrix{ComplexF64}     # Complex Amplitude [V/m]
-  grid :: TransverseGrid
+  grid :: TransverseGrid{<:Real}
   λ :: Float64                # Wavelength [m]
 
-  function ScalarField(U, grid, λ)
+  function ScalarField(U, grid::TransverseGrid{<:Real}, λ)
     @assert size(U) == (grid.Nx, grid.Ny) "Field matrix size must match grid dimensions"
     @assert λ > 0 "Wavelength must be positive"
     new(U, grid, λ)
