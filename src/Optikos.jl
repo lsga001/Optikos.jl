@@ -33,7 +33,8 @@ include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
 #include("Solvers/Eigenmode.jl")
 #include("Solvers/Optimization.jl")
 #
-include("Visualization/Plots.jl") 
+include("Visualization/Recipes.jl") 
+#include("Visualization/Plots.jl") 
 #include("Visualization/Animations.jl") 
 
 # TODO: Add file for Bluestein propagation method and chirp z transform
