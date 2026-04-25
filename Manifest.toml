@@ -2,7 +2,7 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "9d8049d55bb349b7a87bd3e100a84b18de7811a3"
+project_hash = "f16b6a99f94ba82814234e0e9c265af5f96b26ab"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -984,7 +984,6 @@ uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
 version = "0.5.6+0"
 
 [[deps.Optikos]]
-deps = ["SpecialFunctions"]
 path = "."
 uuid = "94154c6d-4466-4fcb-80cd-488809413af4"
 version = "0.1.0"

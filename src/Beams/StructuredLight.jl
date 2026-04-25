@@ -1,5 +1,3 @@
-using SpecialFunctions: besseli
-
 """
     _laguerre(n, α, x) -> Real
 
@@ -28,7 +26,7 @@ end
 
 
 """
-    evaluate(beam::GaussianBeam, grid::TransverseGrid) -> ScalarField
+    evaluate(grid::TransverseGrid, beam::GaussianBeam) -> ScalarField
 
 Sample a Gaussian beam onto a transverse grid at the plane `z = z0`.
 
@@ -66,7 +64,7 @@ julia> grid  = TransverseGrid(range(-1e-3, 1e-3, 64), range(-1e-3, 1e-3, 64));
 
 julia> beam  = GaussianBeam(200e-6, 632.8e-9);
 
-julia> field = evaluate(beam, grid);
+julia> field = evaluate(grid, beam);
 
 julia> size(field.U)
 (64, 64)
@@ -75,7 +73,7 @@ julia> size(field.U)
 # References
 Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.1
 """
-function evaluate(beam::GaussianBeam, grid::TransverseGrid) :: ScalarField
+function evaluate(grid::TransverseGrid, beam::GaussianBeam) :: ScalarField
   (; w0, λ, z0, n_index) = beam
 
   k = 2π * n_index / λ
@@ -101,7 +99,7 @@ end
 
 
 """
-    evaluate(beam::LGBeam, grid::TransverseGrid) -> ScalarField
+    evaluate(grid::TransverseGrid, beam::LGBeam) -> ScalarField
 
 Sample a Laguerre-Gaussian beam LG(p, l) onto a transverse grid at `z = z0`.
 
@@ -117,8 +115,8 @@ L_p^{|l|}\\!\\left(\\frac{2r^2}{w_0^2}\\right)
 where ``L_p^{|l|}`` is the generalized Laguerre polynomial.
 
 # Arguments
-- `beam`: [`LGBeam`](@ref) descriptor
 - `grid`: [`TransverseGrid`](@ref) on which to evaluate
+- `beam`: [`LGBeam`](@ref) descriptor
 
 # Returns
 A [`ScalarField`](@ref) with the LG modal amplitude.
@@ -129,7 +127,7 @@ julia> grid = TransverseGrid(range(-1e-3, 1e-3, 64), range(-1e-3, 1e-3, 64));
 
 julia> beam = LGBeam(200e-6, 632.8e-9, 0, 3);
 
-julia> field = evaluate(beam, grid);
+julia> field = evaluate(grid, beam);
 
 julia> abs2(field.U[32, 32]) < 1e3   # vortex: zero on axis for l≠0
 true
@@ -139,7 +137,7 @@ true
 Allen et al., *Phys. Rev. A* 45, 8185 (1992)
 Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.3
 """
-function evaluate(beam::LGBeam, grid::TransverseGrid) :: ScalarField
+function evaluate(grid::TransverseGrid, beam::LGBeam) :: ScalarField
     (; w0, λ, p, l, z0, n_index) = beam
 
     k  = 2π * n_index / λ

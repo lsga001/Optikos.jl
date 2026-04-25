@@ -18,7 +18,7 @@ intensity(f::AbstractField) = error("$(typeof(f)) must implement intensity()")
 #   sample(b, g::AbstractGrid)  → AbstractField
 
 wavelength(b::AbstractBeam) = error("$(typeof(b)) must implement wavelength()")
-evaluate(b::AbstractBeam, g::AbstractGrid) = error("$(typeof(b)) must implement sample()")
+evaluate(g::AbstractGrid, b::AbstractBeam) = error("$(typeof(b)) must implement sample()")
 
 ##########
 # Checks
