@@ -1,3 +1,4 @@
 [deps]
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Optikos = "94154c6d-4466-4fcb-80cd-488809413af4"
