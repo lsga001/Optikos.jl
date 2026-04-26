@@ -27,7 +27,7 @@ julia> grid  = TransverseGrid(range(-2e-3, 2e-3, 256), range(-2e-3, 2e-3, 256));
 
 julia> beam  = GaussianBeam(200e-6, 632.8e-9);
 
-julia> field = evaluate(beam, grid);
+julia> field = evaluate(grid, beam);
 
 julia> field_z = propagate_angular(field, 0.1);
 ```

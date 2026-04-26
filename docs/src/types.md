@@ -37,3 +37,8 @@ OpticalSystem
 DiskSchellModel
 GaussianSchellModel
 ```
+
+## Ensembles
+```@docs
+EnsembleIntensity
+```

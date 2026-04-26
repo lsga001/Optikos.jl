@@ -18,6 +18,7 @@ makedocs(
     "Beams" => "beams.md",
     "Ensembles" => "ensembles.md",
     "Operations" => "operations.md",
+    "Propagation" => "propagation.md",
     "Optical Elements" => "opticalelements.md",
     "Visualization" => "visualization.md",
   ],
