@@ -1,6 +1,11 @@
 using FFTW
 
 # TODO: Check bluestein propagation implementation.
+# If we put an off-center beam, it recenters at the end, and it should not.
+# When using unconvensional grids, it can form patterns that should not be there.
+# If zooming in too much, it can become just noise.
+# We should check that the intensity and amplitudes are correct.
+
 """
     propagate_bluestein(field::ScalarField, z::Float64,
                         output_grid::TransverseGrid) -> ScalarField
