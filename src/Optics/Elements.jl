@@ -4,7 +4,8 @@
 Propagates a field a distance z defined by `space::FreeSpace`.
 """
 function apply(space::FreeSpace, field::ScalarField) :: ScalarField
-  return propagate_fresnel(field, space.z)
+  #return propagate_fresnel(field, space.z)
+  return propagate_bluestein(field, space.z, field.grid)
 end
 
 function apply(lens::ThinLens, field::ScalarField) :: ScalarField

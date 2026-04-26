@@ -33,6 +33,7 @@ include("Sources/ShellModels.jl")
 include("Propagation/Fresnel.jl") # Fresnel diffraction
 #include("Propagation/Fraunhofer.jl") # Far-field / Fraunhofer diffraction
 include("Propagation/AngularSpectrum.jl") # Angular spectrum method
+include("Propagation/Bluestein.jl")
 #include("Propagation/BeamPropagation.jl") # BPM, split-step methods
 #
 #include("Beams/Gaussian.jl") # Gaussian beams, beam waist, Rayleigh range
@@ -59,7 +60,7 @@ export AbstractGrid, AbstractField, AbstractBeam, AbstractOpticalElement, Abstra
 export grid, wavelength, intensity        # Beams
 export evaluate                           # Grid, Beam -> ScalarField
 
-export apply, propagate_angular, propagate_fresnel
+export apply, propagate_angular, propagate_fresnel, propagate_bluestein
 
 export EnsembleIntensity
 export sample, ensemble_intensity  # Ensembles
