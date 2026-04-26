@@ -1,5 +1,5 @@
 """
-    SphericalBeam(λ::Float64, z; n_index=1.0)
+    SphericalBeam(λ::Float64, z; n_index=1.0, center=(0.0, 0.0))
 
 Analytical descriptor of a spherical beam.
 
@@ -20,17 +20,54 @@ struct SphericalBeam <: AbstractBeam
   λ   ::Float64
   z  ::Float64
   n_index   ::Float64
+  center :: Tuple{Float64, Float64}
 
-  function SphericalBeam(λ, z; n_index=1.0)
+  function SphericalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
     @assert λ > 0 "Wavelength must be positive"
     @assert abs(z) > 0 "Plane z-position must be nonzero"
     @assert n_index > 0 "Refractive index must be positive"
-    new(λ, z, n_index)
+    new(λ, z, n_index, center)
   end
 end
 
+wavelength(beam::SphericalBeam) = beam.λ
+
 """
-    GaussianBeam(w0::Float64, λ::Float64; z0=0.0, n_index=1.0)
+    ParaboloidalBeam(λ::Float64, z; n_index=1.0, center=(0.0, 0.0))
+
+Analytical descriptor of a paraboloidal beam.
+
+# Fields
+- `λ `: wavelength [m]
+- `z`: axial position of the transverse beam profile assuming origin at z=0 [m]
+- `n_index `: refractive index of the propagation medium
+
+# Examples
+```jldoctest
+julia> beam = ParaboloidalBeam(632.8e-9, 0.1);
+```
+
+# References
+Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §2.2
+"""
+struct ParaboloidalBeam <: AbstractBeam
+  λ         ::Float64
+  z         ::Float64
+  n_index   ::Float64
+  center :: Tuple{Float64, Float64}
+
+  function ParaboloidalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
+    @assert λ > 0 "Wavelength must be positive"
+    @assert abs(z) > 0 "Plane z-position must be nonzero"
+    @assert n_index > 0 "Refractive index must be positive"
+    new(λ, z, n_index, center)
+  end
+end
+
+wavelength(beam::ParaboloidalBeam) = beam.λ
+
+"""
+    GaussianBeam(w0::Float64, λ::Float64; z0=0.0, n_index=1.0, center=(0.0,0.0))
 
 Analytical descriptor of a fundamental Gaussian beam (TEM₀₀).
 
@@ -59,12 +96,13 @@ struct GaussianBeam <: AbstractBeam
   λ   ::Float64
   z0  ::Float64
   n_index   ::Float64
+  center :: Tuple{Float64, Float64}
 
-  function GaussianBeam(w0, λ; z0=0.0, n_index=1.0)
+  function GaussianBeam(w0, λ; z0=0.0, n_index=1.0, center=(0.0, 0.0))
     @assert w0 > 0 "Beam waist must be positive"
     @assert λ > 0 "Wavelength must be positive"
     @assert n_index > 0 "Refractive index must be positive"
-    new(w0, λ, z0, n_index)
+    new(w0, λ, z0, n_index, center)
   end
 end
 
@@ -72,7 +110,7 @@ wavelength(beam::GaussianBeam) = beam.λ
 
 
 """
-    LGBeam(w0::Float64, λ::Float64, p::Int, l::Int; z0=0.0, n_index=1.0)
+    LGBeam(w0::Float64, λ::Float64, p::Int, l::Int; z0=0.0, n_index=1.0, center=(0.0, 0.0))
 
 Analytical descriptor of a Laguerre-Gaussian beam LG(p, l).
 
@@ -110,13 +148,14 @@ struct LGBeam <: AbstractBeam
   l   ::Int
   z0  ::Float64
   n_index   ::Float64
+  center :: Tuple{Float64, Float64}
 
-  function LGBeam(w0, λ, p, l; z0=0.0, n_index=1.0)
+  function LGBeam(w0, λ, p, l; z0=0.0, n_index=1.0, center=(0.0, 0.0))
     @assert w0 > 0 "Beam waist must be positive"
     @assert λ  > 0 "Wavelength must be positive"
     @assert p  >= 0 "Radial index p must be non-negative"
     @assert n_index  > 0 "Refractive index must be positive"
-    new(w0, λ, p, l, z0, n_index)
+    new(w0, λ, p, l, z0, n_index, center)
   end
 end
 
@@ -124,7 +163,7 @@ wavelength(beam::LGBeam) = beam.λ
 
 
 """
-    HGBeam(w0::Float64, λ::Float64, m::Int, n::Int; z0=0.0, n_index=1.0)
+    HGBeam(w0::Float64, λ::Float64, m::Int, n::Int; z0=0.0, n_index=1.0, center=(0.0, 0.0))
 
 Analytical descriptor of a Hermite-Gaussian beam HG(m, n).
 
@@ -160,14 +199,15 @@ struct HGBeam <: AbstractBeam
   n   ::Int
   z0  ::Float64
   n_index ::Float64
+  center :: Tuple{Float64, Float64}
 
-  function HGBeam(w0, λ, m, n; z0=0.0, n_index=1.0)
+  function HGBeam(w0, λ, m, n; z0=0.0, n_index=1.0, center=(0.0, 0.0))
         @assert w0 > 0  "Beam waist must be positive"
         @assert λ > 0  "Wavelength must be positive"
         @assert m >= 0 "Mode index m must be non-negative"
         @assert n >= 0 "Mode index n must be non-negative"
         @assert n_index > 0  "Refractive index must be positive"
-        new(w0, λ, m, n, z0, n_index)
+        new(w0, λ, m, n, z0, n_index, center)
     end
 end
 
