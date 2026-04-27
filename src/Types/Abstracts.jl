@@ -14,13 +14,6 @@ evaluate(g::AbstractGrid, b::AbstractBeam) = error("$(typeof(b)) must implement 
 abstract type AbstractOpticalElement end
 abstract type AbstractEnsembleSource <: AbstractBeam end
 
-"""
-    abstract type AbstractMixer end
-
-An optical element that takes two input fields and produces one output field
-through a nonlinear interaction. Unlike `AbstractOpticalElement` which operates
-on a single field, a mixer couples two fields together.
-"""
 abstract type AbstractMixer end
 
 ##########

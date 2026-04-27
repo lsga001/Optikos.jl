@@ -33,3 +33,8 @@ ax.title  = "LG beam (p=0, l=1) intensity"
 Colorbar(fig[1,2], hm)
 fig
 ```
+
+## Experimental setups
+```@docs
+mixing_experiment
+```

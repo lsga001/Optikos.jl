@@ -3,4 +3,5 @@
 evaluate
 apply
 sample
+mix
 ```

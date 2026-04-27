@@ -19,14 +19,6 @@ LGBeam
 HGBeam
 ```
 
-## Optical Elements
-```@docs
-FreeSpace
-CircularAperture
-ThinLens
-PhaseMask
-```
-
 ## Optical Systems
 ```@docs
 OpticalSystem

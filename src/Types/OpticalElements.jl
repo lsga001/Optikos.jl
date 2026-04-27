@@ -80,6 +80,7 @@ carrying orbital angular momentum of `lħ` per photon.
 # Examples
 ```jldoctest
 julia> spe = SpiralPhaseElement(1);
+
 julia> spe.l
 1
 ```
