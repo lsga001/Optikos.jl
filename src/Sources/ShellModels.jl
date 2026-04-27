@@ -21,8 +21,12 @@ where `(x₀, y₀)` is drawn uniformly from a disk of radius `R`.
 - `grid`  : transverse observation grid
 - `z`     : propagation distance from source to observation plane [m]
 """
-function sample(source::DiskSchellModel, grid::TransverseGrid{<:Real}, 
-                z::Float64) :: Tuple{ScalarField, Tuple{Float64, Float64}}
+function sample(
+  source::DiskSchellModel, 
+  grid::TransverseGrid{<:Real}, 
+  z::Float64
+) :: Tuple{ScalarField, Tuple{Float64, Float64}}
+
   x0, y0 = _sample_disk(source.R)
   point = (x0, y0)
  

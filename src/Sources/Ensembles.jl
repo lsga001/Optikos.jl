@@ -1,4 +1,3 @@
-# TODO: Check the use of Welford's algorithm here.
 """
     ensemble_average(source, grid; n_realizations=500,
                      system=identity, compute_std=false) -> EnsembleIntensity
@@ -59,3 +58,4 @@ function ensemble_intensity(
 
   return EnsembleIntensity(mean_I, std, grid, points)
 end
+

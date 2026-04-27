@@ -24,7 +24,7 @@ struct SphericalBeam <: AbstractBeam
 
   function SphericalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
     @assert λ > 0 "Wavelength must be positive"
-    @assert abs(z) > 0 "Plane z-position must be nonzero"
+    @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
     @assert n_index > 0 "Refractive index must be positive"
     new(λ, z, n_index, center)
   end
@@ -58,7 +58,7 @@ struct ParaboloidalBeam <: AbstractBeam
 
   function ParaboloidalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
     @assert λ > 0 "Wavelength must be positive"
-    @assert abs(z) > 0 "Plane z-position must be nonzero"
+    @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
     @assert n_index > 0 "Refractive index must be positive"
     new(λ, z, n_index, center)
   end

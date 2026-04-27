@@ -5,12 +5,23 @@ abstract type AbstractGrid end
 grid(f::AbstractField) = error("$(typeof(f)) must implement grid()")
 wavelength(f::AbstractField) = error("$(typeof(f)) must implement wavelength()")
 intensity(f::AbstractField) = error("$(typeof(f)) must implement intensity()")
+real(f::AbstractField) = error("$(typeof(f)) must implement real()")
+imaginary(f::AbstractField) = error("$(typeof(f)) must implement imaginary()")
 
 wavelength(b::AbstractBeam) = error("$(typeof(b)) must implement wavelength()")
 evaluate(g::AbstractGrid, b::AbstractBeam) = error("$(typeof(b)) must implement sample()")
 
 abstract type AbstractOpticalElement end
 abstract type AbstractEnsembleSource <: AbstractBeam end
+
+"""
+    abstract type AbstractMixer end
+
+An optical element that takes two input fields and produces one output field
+through a nonlinear interaction. Unlike `AbstractOpticalElement` which operates
+on a single field, a mixer couples two fields together.
+"""
+abstract type AbstractMixer end
 
 ##########
 # Checks

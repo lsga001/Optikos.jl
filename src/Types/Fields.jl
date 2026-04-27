@@ -37,7 +37,12 @@ end
 # Fulfill AbstractField interface
 grid(f::ScalarField) = f.grid
 wavelength(f::ScalarField) = f.λ
-intensity(f::ScalarField) = abs2.(f.U)
+intensity(f::ScalarField) = Base.abs2.(f.U)
+real(f::ScalarField) = Base.real.(f.U)
+imaginary(f::ScalarField) = Base.imag.(f.U)
+abs(f::ScalarField) = Base.abs.(f.U)
+
+
 
 #struct 
 

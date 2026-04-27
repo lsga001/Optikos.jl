@@ -15,17 +15,14 @@ include("Types/Sources.jl")
 include("Types/OpticalElements.jl")
 include("Types/OpticalSystems.jl")
 include("Types/Ensembles.jl")
+include("Types/Mixers.jl")
 
 include("Utils.jl")
 
 # Implementations
 
 include("Optics/Elements.jl")
-#include("Optics/General.jl")
-#include("Optics/Ray.jl")
-#include("Optics/Wave.jl")
-#include("Optics/Fourier.jl")
-#include("Optics/Nonlinear.jl")
+include("Optics/Mixers.jl")
 #
 include("Sources/Ensembles.jl")
 include("Sources/ShellModels.jl")
@@ -36,9 +33,7 @@ include("Propagation/AngularSpectrum.jl") # Angular spectrum method
 include("Propagation/Bluestein.jl")
 #include("Propagation/BeamPropagation.jl") # BPM, split-step methods
 #
-#include("Beams/Gaussian.jl") # Gaussian beams, beam waist, Rayleigh range
 include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
-#include("Beams/Polarization.jl") # Stokes params, Jones calculus, Mueller matrices
 #
 #include("Quantum/States.jl") 
 #include("Quantum/Operators.jl") 
@@ -48,28 +43,47 @@ include("Beams/StructuredLight.jl") # LG, HG, Bessel, Airy beams
 #include("Solvers/Eigenmode.jl")
 #include("Solvers/Optimization.jl")
 #
+include("Setups/Setups.jl")
+#
 include("Visualization/Recipes.jl") 
-#include("Visualization/Plots.jl") 
+include("Visualization/Plots.jl") 
 #include("Visualization/Animations.jl") 
 
 # TODO: Add file for Bluestein propagation method and chirp z transform
 # based on Hu et al. 2020 - Efficient Full-path optical calculation of scalar
 # and vector diffraction using the Bluestein method.
 
-export AbstractGrid, AbstractField, AbstractBeam, AbstractOpticalElement, AbstractEnsembleSource
-export grid, wavelength, intensity        # Beams
-export evaluate                           # Grid, Beam -> ScalarField
+export AbstractGrid, AbstractField, AbstractBeam
+export AbstractOpticalElement, AbstractEnsembleSource, AbstractMixer
+
+export TransverseGrid
+
+export ScalarField
+
+export SphericalBeam, ParaboloidalBeam, GaussianBeam, LGBeam, HGBeam
+
+export grid, wavelength, intensity, real, imaginary, abs # Beams
+export evaluate                                     # Grid, Beam -> ScalarField
 
 export apply, propagate_angular, propagate_fresnel, propagate_bluestein
 
 export EnsembleIntensity
 export sample, ensemble_intensity  # Ensembles
 
-export TransverseGrid
-export ScalarField
-export SphericalBeam, ParaboloidalBeam, GaussianBeam, LGBeam, HGBeam
-export FreeSpace, ThinLens, CircularAperture, PhaseMask
+export mix
+
+export FreeSpace, ThinLens, FourierLens, CircularAperture
+export SpiralPhaseElement, SLM, PhaseMask
+export Rotate180, Conjugate, ConjugateInverter
+
 export GaussianSchellModel, DiskSchellModel
+
+export SFGCrystal
+
 export OpticalSystem
+
+export mixing_experiment
+
+export get_wavevectors
 
 end
