@@ -24,6 +24,30 @@ function _laguerre(n::Int, α::Real, x::Real) :: Real
 end
 
 """
+    _hermite(n, x) -> Real
+
+Evaluate the physicists Hermite polynomial H_n(x).
+Computed via the recurrence relation for numerical stability.
+
+# References
+"""
+function _hermite(n::Int, x::Real) :: Real
+  @assert n >= 0 "n must be nonnegative"
+  #@assert α > -1 "α must be > -1"
+  n == 0 && return 1.0
+  n == 1 && return 2.0 * x
+  H_prev2 = 1.0
+  H_prev1 = 2.0 * x
+  H = 0.0
+  for k in 1:(n-1)
+    H = 2*x*H_prev1 - 2*k*H_prev2
+    H_prev2 = H_prev1
+    H_prev1 = H
+  end
+  return H
+end
+
+"""
     evaluate(grid::TransverseGrid{<:Real}, beam::SphericalBeam) -> ScalarField
 
 Sample a Spherical beam onto a transverse grid at the plane `z = z0`.
@@ -197,7 +221,7 @@ end
 """
     evaluate(grid::TransverseGrid{<:Real}, beam::LGBeam) -> ScalarField
 
-Sample a Laguerre-Gaussian beam LG(p, l) onto a transverse grid at `z = z0`.
+Sample a Laguerre-Gaussian beam LG(p, l) onto a transverse grid at `z`.
 
 The complex field amplitude is:
 
@@ -205,7 +229,7 @@ The complex field amplitude is:
 U(r, \\phi) = \\left[\\frac{C_{p,l}}{w(z)}\\right]\\left(\\frac{r}{w(z)}\\right)^{l}
 L_p^{l}\\!\\left(\\frac{2r^2}{w^2(z)}\\right)
 \\exp\\!\\left(-\\frac{r^2}{w^2(z)}\\right)
-\\exp(-jkz -jk\\frac{r^2}{2R(z)} \\mp il\\phi + j\\left(2p + l + 1\\right)\\zeta\\!(z))
+\\exp(-jkz -jk\\frac{r^2}{2R(z)} \\mp il\\phi + j\\left(2p + l + 1\\right)\\psi\\!(z))
 ```
 
 where ``L_n^{α}`` is the generalized Laguerre polynomial.
@@ -271,3 +295,76 @@ function evaluate(grid::TransverseGrid{<:Real}, beam::LGBeam) :: ScalarField
 end
 
 modal_number(beam::LGBeam) = 2*beam.p + beam.l + 1
+
+"""
+    evaluate(grid::TransverseGrid{<:Real}, beam::HGBeam) -> ScalarField
+
+Sample a Hermite-Gaussian beam HG(l, m) onto a transverse grid at `z`.
+
+The complex field amplitude is:
+
+```math
+U(r, \\phi) = C_{l,m}\\left[\\frac{w_0}{w(z)}\\right]
+H_l\\!\\left(\\frac{\\sqrt{2}x}{w(z)}\\right)
+H_m\\!\\left(\\frac{\\sqrt{2}y}{w(z)}\\right)
+\\exp\\!\\left(-\\frac{r^2}{w^2(z)}\\right)
+\\exp(-jkz -jk\\frac{r^2}{2R(z)} + j\\left(l + m + 1\\right)\\psi\\!(z))
+```
+
+where ``H_n`` is the Hermite polynomial.
+
+# Arguments
+- `grid`: [`TransverseGrid`](@ref) on which to evaluate
+- `beam`: [`LGBeam`](@ref) descriptor
+
+# Returns
+A [`ScalarField`](@ref) with the HG modal amplitude.
+
+# Examples
+```jldoctest
+julia> grid = TransverseGrid(range(-1e-3, 1e-3, 64), range(-1e-3, 1e-3, 64));
+
+julia> beam = HGBeam(200e-6, 632.8e-9, 1, 3);
+
+julia> field = evaluate(grid, beam);
+```
+
+# References
+Allen 1992. DOI: 10.1103/PhysRevA.45.8185
+Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §3.4
+"""
+function evaluate(grid::TransverseGrid{<:Real}, beam::HGBeam) :: ScalarField
+  (; w0, λ, l, m, z0, n_index, center) = beam
+  
+  x0, y0 = center
+
+  k  = 2π * n_index / λ
+  zR = π * w0^2 * n_index / λ
+  z  = z0
+  
+  wz = w0 * sqrt(1 + (z/zR)^2)
+  Rz = iszero(z) ? Inf : z * (1 + (zR/z)^2)
+  ψz = atan(z/zR)
+
+  X  = @. grid.x' - x0
+  Y  = @. grid.y - y0
+  r² = @. X^2 + Y^2
+
+  C = sqrt(2/π) * sqrt( 2.0^(-l-m) / (factorial(l)*factorial(m)) )
+
+  # U = u * exp(-ikz)
+  # TODO: Check the constant C for correctness
+  # Should it be C/wz or C*(w0/wz)?
+  U = @. C * (w0 / wz) *
+      _hermite(l, sqrt(2) * X / wz) *
+      _hermite(m, sqrt(2) * Y / wz) *
+      exp(-r²/wz^2) *
+      exp(-1im * k * z) *
+      exp(-1im * k * r² / (2 * Rz)) *
+      exp(1im * (l + m + 1) * ψz) +
+      0im
+
+  return ScalarField(U, grid, λ)
+end
+
+modal_number(beam::HGBeam) = beam.l + beam.m + 1

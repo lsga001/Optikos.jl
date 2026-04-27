@@ -9,7 +9,7 @@ real(f::AbstractField) = error("$(typeof(f)) must implement real()")
 imaginary(f::AbstractField) = error("$(typeof(f)) must implement imaginary()")
 
 wavelength(b::AbstractBeam) = error("$(typeof(b)) must implement wavelength()")
-evaluate(g::AbstractGrid, b::AbstractBeam) = error("$(typeof(b)) must implement sample()")
+evaluate(g::AbstractGrid, b::AbstractBeam) = error("$(typeof(b)) must implement evaluate()")
 
 abstract type AbstractOpticalElement end
 abstract type AbstractEnsembleSource <: AbstractBeam end
