@@ -5,7 +5,8 @@ Propagates a field a distance z defined by `space::FreeSpace`.
 """
 function apply(space::FreeSpace, field::ScalarField) :: ScalarField
   #return propagate_fresnel(field, space.z)
-  return propagate_bluestein(field, space.z, field.grid)
+  grid_out = (space.grid_out !== missing) ? space.grid_out : field.grid
+  return propagate_bluestein(field, space.z, grid_out)
 end
 
 function apply(lens::ThinLens, field::ScalarField) :: ScalarField
@@ -25,17 +26,16 @@ function apply(lens::FourierLens, field::ScalarField) :: ScalarField
   dy = field.grid.dy
   Nx = field.grid.Nx
   Ny = field.grid.Ny
-
-  Lx = Nx * dx
-  Ly = Ny * dy
-
-  kx = (2π / Lx) .* collect(-Nx/2:Nx/2-1)
-  ky = (2π / Ly) .* collect(-Ny/2:Ny/2-1)
+ 
+  kx = fftshift(fftfreq(Nx, 2π / dx))
+  ky = fftshift(fftfreq(Ny, 2π / dy))
 
   x_out = (λ*f/(2π)) .* kx
   y_out = (λ*f/(2π)) .* ky
 
-  U_out = fftshift(fft(field.U))
+  prefactor = -1im / (λ * f) * dx * dy
+
+  U_out = prefactor .* fftshift(fft(field.U))
   grid_out = TransverseGrid(x_out, y_out)
   λ_out = λ
 
@@ -53,13 +53,13 @@ function apply(spe::SpiralPhaseElement, field::ScalarField) :: ScalarField
   X = field.grid.x'
   Y = field.grid.y
   φ = @. atan(Y, X)
-  t = @. exp(1im * spe.l * φ)
+  t = @. cis(spe.l * φ)
   return ScalarField(field.U .* t, field.grid, field.λ)
 end
 
 function apply(::Rotate180, field::ScalarField) :: ScalarField
-  @assert field.grid.x[1] ≈ -field.grid.x[end] "Grid must be symmetric around zero"
-  @assert field.grid.y[1] ≈ -field.grid.y[end] "Grid must be symmetric around zero"
+  #@assert field.grid.x[1] ≈ -field.grid.x[end] "Grid must be symmetric around zero"
+  #@assert field.grid.y[1] ≈ -field.grid.y[end] "Grid must be symmetric around zero"
 
   U_out = rot180(field.U) # Rotate by 180. U[i,j] -> U[M-i, N-j]
   grid_out = field.grid
@@ -77,8 +77,8 @@ function apply(::Conjugate, field::ScalarField) :: ScalarField
 end
 
 function apply(::ConjugateInverter, field::ScalarField) :: ScalarField
-  @assert field.grid.x[1] ≈ -field.grid.x[end] "Grid must be symmetric around zero"
-  @assert field.grid.y[1] ≈ -field.grid.y[end] "Grid must be symmetric around zero"
+  #@assert field.grid.x[1] ≈ -field.grid.x[end] "Grid must be symmetric around zero"
+  #@assert field.grid.y[1] ≈ -field.grid.y[end] "Grid must be symmetric around zero"
 
   U_out = conj.(rot180(field.U)) # Rotate by 180. U[i,j] -> U*[M-i, N-j]
   grid_out = field.grid

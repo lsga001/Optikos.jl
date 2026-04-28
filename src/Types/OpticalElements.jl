@@ -4,12 +4,13 @@
 Free space propagation by distance `z` [m].
 """
 struct FreeSpace <: AbstractOpticalElement
-    z :: Float64
+  z :: Float64
+  grid_out :: Union{Missing, TransverseGrid{<:Real}}
+end
 
-    function FreeSpace(z::Float64)
-        @assert z >= 0 "Propagation distance must be nonnegative"
-        new(z)
-    end
+function FreeSpace(z; grid_out=missing)
+  @assert z >= 0 "Propagation distance must be nonnegative"
+  return FreeSpace(z, grid_out)
 end
 
 """

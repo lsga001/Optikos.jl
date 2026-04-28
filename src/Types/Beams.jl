@@ -21,13 +21,13 @@ struct SphericalBeam <: AbstractBeam
   z  ::Float64
   n_index   ::Float64
   center :: Tuple{Float64, Float64}
+end
 
-  function SphericalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
-    @assert λ > 0 "Wavelength must be positive"
-    @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
-    @assert n_index > 0 "Refractive index must be positive"
-    new(λ, z, n_index, center)
-  end
+function SphericalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
+  @assert λ > 0 "Wavelength must be positive"
+  @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
+  @assert n_index > 0 "Refractive index must be positive"
+  return SphericalBeam(λ, z, n_index, center)
 end
 
 wavelength(beam::SphericalBeam) = beam.λ
@@ -55,13 +55,13 @@ struct ParaboloidalBeam <: AbstractBeam
   z         ::Float64
   n_index   ::Float64
   center :: Tuple{Float64, Float64}
+end
 
-  function ParaboloidalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
-    @assert λ > 0 "Wavelength must be positive"
-    @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
-    @assert n_index > 0 "Refractive index must be positive"
-    new(λ, z, n_index, center)
-  end
+function ParaboloidalBeam(λ, z; n_index=1.0, center=(0.0, 0.0))
+  @assert λ > 0 "Wavelength must be positive"
+  @assert Base.abs(z) > 0 "Plane z-position must be nonzero"
+  @assert n_index > 0 "Refractive index must be positive"
+  return ParaboloidalBeam(λ, z, n_index, center)
 end
 
 wavelength(beam::ParaboloidalBeam) = beam.λ
@@ -98,12 +98,13 @@ struct GaussianBeam <: AbstractBeam
   n_index   ::Float64
   center :: Tuple{Float64, Float64}
 
-  function GaussianBeam(w0, λ; z0=0.0, n_index=1.0, center=(0.0, 0.0))
-    @assert w0 > 0 "Beam waist must be positive"
-    @assert λ > 0 "Wavelength must be positive"
-    @assert n_index > 0 "Refractive index must be positive"
-    new(w0, λ, z0, n_index, center)
-  end
+end
+
+function GaussianBeam(w0, λ; z0=0.0, n_index=1.0, center=(0.0, 0.0))
+  @assert w0 > 0 "Beam waist must be positive"
+  @assert λ > 0 "Wavelength must be positive"
+  @assert n_index > 0 "Refractive index must be positive"
+  return GaussianBeam(w0, λ, z0, n_index, center)
 end
 
 wavelength(beam::GaussianBeam) = beam.λ
@@ -150,13 +151,14 @@ struct LGBeam <: AbstractBeam
   n_index   ::Float64
   center :: Tuple{Float64, Float64}
 
-  function LGBeam(w0, λ, p, l; z0=0.0, n_index=1.0, center=(0.0, 0.0))
-    @assert w0 > 0 "Beam waist must be positive"
-    @assert λ  > 0 "Wavelength must be positive"
-    @assert p  >= 0 "Radial index p must be non-negative"
-    @assert n_index  > 0 "Refractive index must be positive"
-    new(w0, λ, p, l, z0, n_index, center)
-  end
+end
+
+function LGBeam(w0, λ, p, l; z0=0.0, n_index=1.0, center=(0.0, 0.0))
+  @assert w0 > 0 "Beam waist must be positive"
+  @assert λ  > 0 "Wavelength must be positive"
+  @assert p  >= 0 "Radial index p must be non-negative"
+  @assert n_index  > 0 "Refractive index must be positive"
+  return LGBeam(w0, λ, p, l, z0, n_index, center)
 end
 
 wavelength(beam::LGBeam) = beam.λ
@@ -200,15 +202,15 @@ struct HGBeam <: AbstractBeam
   z0  ::Float64
   n_index ::Float64
   center :: Tuple{Float64, Float64}
+end
 
-  function HGBeam(w0, λ, l, m; z0=0.0, n_index=1.0, center=(0.0, 0.0))
-        @assert w0 > 0  "Beam waist must be positive"
-        @assert λ > 0  "Wavelength must be positive"
-        @assert l >= 0 "Mode index m must be non-negative"
-        @assert m >= 0 "Mode index n must be non-negative"
-        @assert n_index > 0  "Refractive index must be positive"
-        new(w0, λ, l, m, z0, n_index, center)
-    end
+function HGBeam(w0, λ, l, m; z0=0.0, n_index=1.0, center=(0.0, 0.0))
+  @assert w0 > 0  "Beam waist must be positive"
+  @assert λ > 0  "Wavelength must be positive"
+  @assert l >= 0 "Mode index m must be non-negative"
+  @assert m >= 0 "Mode index n must be non-negative"
+  @assert n_index > 0  "Refractive index must be positive"
+  return HGBeam(w0, λ, l, m, z0, n_index, center)
 end
 
 wavelength(beam::HGBeam) = beam.λ

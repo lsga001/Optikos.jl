@@ -31,7 +31,7 @@ function sample(
   point = (x0, y0)
  
   λ = source.λ
-  beam = ParaboloidalBeam(λ, z, center=(x0, y0))
+  beam = SphericalBeam(λ, z, center=(x0, y0))
   field = evaluate(grid, beam)
 
   #return ScalarField(E, grid, source.λ)
