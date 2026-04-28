@@ -62,7 +62,7 @@ export ScalarField
 
 export SphericalBeam, ParaboloidalBeam, GaussianBeam, LGBeam, HGBeam
 
-export grid, wavelength, intensity, real, imaginary, abs # Beams
+export grid, wavelength, intensity # Beams
 export evaluate                                     # Grid, Beam -> ScalarField
 
 export apply, propagate_angular, propagate_fresnel, propagate_bluestein

@@ -37,12 +37,45 @@ end
 # Fulfill AbstractField interface
 grid(f::ScalarField) = f.grid
 wavelength(f::ScalarField) = f.λ
-intensity(f::ScalarField) = Base.abs2.(f.U)
-real(f::ScalarField) = Base.real.(f.U)
-imaginary(f::ScalarField) = Base.imag.(f.U)
-abs(f::ScalarField) = Base.abs.(f.U)
+intensity(f::ScalarField) = ScalarField(abs2.(f.U),f.grid,f.λ)
+Base.real(f::ScalarField) = ScalarField(complex.(Base.real.(f.U)),f.grid,f.λ)
+Base.imag(f::ScalarField) = ScalarField(complex.(imag.(f.U)),f.grid,f.λ)
+Base.abs(f::ScalarField) = ScalarField(abs.(f.U),f.grid,f.λ)
+Base.sqrt(f::ScalarField) = ScalarField(sqrt.(abs(f).U),f.grid,f.λ)
 
+function Base.:+(f1::ScalarField, f2::ScalarField) :: ScalarField
+  @assert f1.λ ≈ f2.λ "Wavelengths must match"
+  @assert f1.grid == f2.grid "Grids must match"
+  return ScalarField(f1.U .+ f2.U, f1.grid, f1.λ)
+end
 
+function Base.:-(f1::ScalarField, f2::ScalarField) :: ScalarField
+  @assert f1.λ ≈ f2.λ "Wavelengths must match"
+  @assert f1.grid == f2.grid "Grids must match"
+  return ScalarField(f1.U .- f2.U, f1.grid, f1.λ)
+end
+
+function Base.:*(f1::ScalarField, f2::ScalarField) :: ScalarField
+  @assert f1.λ ≈ f2.λ "Wavelengths must match"
+  @assert f1.grid == f2.grid "Grids must match"
+  return ScalarField(f1.U .* f2.U, f1.grid, f1.λ)
+end
+
+function Base.:*(α::Number,f::ScalarField) :: ScalarField
+  return ScalarField(α .* f.U, f.grid, f.λ)
+end
+
+function Base.:*(f::ScalarField, α::Number) :: ScalarField
+  return α * f
+end
+
+function Base.:/(f::ScalarField, α::Number) :: ScalarField
+  return ScalarField(f.U ./ α, f.grid, f.λ)
+end
+
+function Base.conj(f::ScalarField) :: ScalarField
+  return ScalarField(conj.(f.U), f.grid, f.λ)
+end
 
 #struct 
 

@@ -35,7 +35,7 @@ function apply(lens::FourierLens, field::ScalarField) :: ScalarField
 
   prefactor = -1im / (λ * f) * dx * dy
 
-  U_out = prefactor .* fftshift(fft(field.U))
+  U_out = prefactor .* fftshift(fft(ifftshift(field.U)))
   grid_out = TransverseGrid(x_out, y_out)
   λ_out = λ
 

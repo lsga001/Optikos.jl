@@ -5,7 +5,7 @@ using CairoMakie
   units = :mm
   "Type of plot"
   plottype = :intensity
-  colormap = :inferno
+  colormap = :viridis
 end
 
 function Makie.plot!(fp::FieldPlot{<:Tuple{<:ScalarField}})
@@ -17,13 +17,14 @@ function Makie.plot!(fp::FieldPlot{<:Tuple{<:ScalarField}})
             units == :nm ? 1e9 : 1.0
     x = @. field.grid.x * scale
     y = @. field.grid.y * scale
-    U = plottype == :real ? real(field)' :
-        plottype == :imaginary ? imaginary(field)' : 
-        plottype == :abs ? abs(field)' : intensity(field)'
+    U = plottype == :real ? Base.real.(field.U)' :
+        plottype == :imaginary ? imag.(field.U)' : 
+        plottype == :abs ? abs.(field.U)' : 
+        plottype == :sqrt ? sqrt.(abs.(field.U))' : abs2.(field.U)'
 
     # Make it so that it doesn't fail for I_min≈I_max due to color
     U_min, U_max = extrema(U)
-    colorrange = U_min ≈ U_max ? (0, 2*U_max) : (U_min, U_max)
+    colorrange = U_min ≈ U_max ? (0, 2*U_max+1e-9) : (U_min, U_max)
     return x, y, U, colorrange
   end
 
