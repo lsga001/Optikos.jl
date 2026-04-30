@@ -38,6 +38,9 @@ Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §4.4
 """
 function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   @assert z >= 0 "Propagation distance must be nonnegative"
+  
+  λ = field.λ
+  k = 2π/λ
 
   Nx = field.grid.Nx
   Ny = field.grid.Ny
@@ -46,13 +49,16 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   Lx = Nx*dx/2
   Ly = Nx*dy/2
 
+  @assert dx>=λ*z/Lx "The H chirp is adequately sampled when dx>=λz/Lx"
+  @assert dy>=λ*z/Ly "The H chirp is adequately sampled when dy>=λz/Ly"
+
+  # TODO: Implement a check that decides whether to use transfer function 
+  # or input response based on short or small z and λ
+  # Read "Computational Fourier Optics" David Voelz (2011)
+
   fx = fftshift(fftfreq(Nx, 1/dx))'   # shape (1, Nx)
   fy = fftshift(fftfreq(Ny, 1/dy))    # shape (Ny, 1)
-  #fx = collect(-1/(2dx):1/(2Lx):1/(2dx)-1/(2Lx))'
-  #fy = collect(-1/(2dy):1/(2Ly):1/(2dy)-1/(2Ly))
 
-  λ = field.λ
-  k = 2π/λ
 
   kz² = @. (2π)^2 * (λ^-2 - fx^2 - fy^2)
   kz = @. sqrt(kz²)
@@ -60,7 +66,7 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   #kz[kz² .< 0] = -1im*kz[kz² .< 0]
 
   # Transfer function (Angular spectrum)
-  H = @. exp(-1im * kz * z)
+  H = @. exp(1im * kz * z)
   
   # Transfer function (Fresnel approximation)
   #H = @. exp(-1im * k * z) * exp(1im*π*λ*z*(fx^2 + fy^2))

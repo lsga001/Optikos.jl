@@ -10,15 +10,27 @@ function apply(space::FreeSpace, field::ScalarField) :: ScalarField
   #return propagate_bluestein(field, space.z, grid_out)
 end
 
-function apply(lens::ThinLens, field::ScalarField) :: ScalarField
-# TODO: THE SCALE OF THE THIN LENS MUST BE CHECKED AGAINST THE GRID
+function apply(lens::ThinLens, field::ScalarField) :: ScalarField 
+  f = lens.f
+  D_L = lens.diameter
+  d0 = lens.thickness
+  f_number = abs(f)/D_L
+
+  λ = field.λ
+  dx = field.grid.dx
+  dy = field.grid.dy
+
+  @assert f_number >= dx/λ "f-number must be bigger than Δx/λ"
+  @assert f_number >= dy/λ "f-number must be bigger than Δy/λ"
+
   k  = 2π / field.λ
   X  = field.grid.x'
   Y  = field.grid.y
-  r² = @. X^2 + Y^2
-  #h₀ = @. exp(im*k*d0) # constant prefactor due to lens thickness
-  h₀ = 1
-  t  = @. h₀ * exp(1im * k * r² / (2 * lens.f))
+  R² = @. X^2 + Y^2
+  h₀ = @. exp(im*k*d0) # constant prefactor due to lens thickness
+
+  P = @. (R² <= (D_L/2)^2) # lens pupil function
+  t  = @. h₀ * P * exp(-1im * k * R² / (2 * lens.f))
   return ScalarField(field.U .* t, field.grid, field.λ)
 end
 

@@ -26,12 +26,20 @@ t(x,y) = \\exp\\!\\left(-i\\frac{k}{2f}(x^2 + y^2)\\right)
 Positive `f` for converging, negative for diverging.
 """
 struct ThinLens <: AbstractOpticalElement
-    f :: Float64
+  f :: Float64
+  diameter :: Float64
+  thickness :: Float64
 
-    function ThinLens(f::Float64)
-        #@assert !iszero(f) "Focal length cannot be zero"
-        new(f)
-    end
+  function ThinLens(f::Float64, diameter::Float64, thickness::Float64)
+    @assert !iszero(f) "Focal length cannot be zero"
+    @assert diameter>=0 "Lens diameter cannot be negative"
+    @assert thickness>=0 "Lens thickness cannot be negative"
+    new(f, diameter, thickness)
+  end
+end
+
+function ThinLens(f::Float64, diameter::Float64; thickness=0.0)
+  return ThinLens(f, diameter, thickness)
 end
 
 """
