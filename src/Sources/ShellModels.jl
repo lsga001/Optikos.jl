@@ -34,11 +34,10 @@ function sample(
   beam = SphericalBeam(λ, z, center=(x0, y0))
   field = evaluate(grid, beam)
 
-  #return ScalarField(E, grid, source.λ)
   return field, point
 end
 
-# Internal helper — uniform sampling within a disk via rejection sampling
+# Internal helper — uniform sampling within a disk
 function _sample_disk(R::Float64) :: Tuple{Float64, Float64}
   r = R * sqrt(rand())
   φ = 2π * rand()

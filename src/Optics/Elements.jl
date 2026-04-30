@@ -68,8 +68,12 @@ end
 function apply(aperture::CircularAperture, field::ScalarField) :: ScalarField
   X = field.grid.x'
   Y = field.grid.y
+  U_out = 0*field.U
+
   mask = @. (X^2 + Y^2 <= aperture.R^2)
-  return ScalarField(field.U .* mask, field.grid, field.λ)
+  U_out[mask] = field.U[mask]
+
+  return ScalarField(U_out, field.grid, field.λ)
 end
 
 function apply(spe::SpiralPhaseElement, field::ScalarField) :: ScalarField
