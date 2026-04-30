@@ -42,13 +42,16 @@ Takes the field to the far-field using a lens with
 focal length `f`.
 """
 struct FourierLens <: AbstractOpticalElement
+    d :: Float64
     f :: Float64
 
-    function FourierLens(f::Float64)
+    function FourierLens(d::Float64, f::Float64)
+        @assert d>=0 "Distance before lens cannot be negative"
         @assert !iszero(f) "Focal length cannot be zero"
-        new(f)
+        new(d,f)
     end
 end
+
 
 """
     CircularAperture(R)

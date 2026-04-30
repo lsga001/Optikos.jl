@@ -4,36 +4,47 @@
 Propagates a field a distance z defined by `space::FreeSpace`.
 """
 function apply(space::FreeSpace, field::ScalarField) :: ScalarField
+  return propagate_angular(field, space.z)
   #return propagate_fresnel(field, space.z)
-  grid_out = (space.grid_out !== missing) ? space.grid_out : field.grid
-  return propagate_bluestein(field, space.z, grid_out)
+  #grid_out = (space.grid_out !== missing) ? space.grid_out : field.grid
+  #return propagate_bluestein(field, space.z, grid_out)
 end
 
 function apply(lens::ThinLens, field::ScalarField) :: ScalarField
+# TODO: THE SCALE OF THE THIN LENS MUST BE CHECKED AGAINST THE GRID
   k  = 2π / field.λ
   X  = field.grid.x'
   Y  = field.grid.y
   r² = @. X^2 + Y^2
-  t  = @. exp(-1im * k * r² / (2 * lens.f))
+  #h₀ = @. exp(im*k*d0) # constant prefactor due to lens thickness
+  h₀ = 1
+  t  = @. h₀ * exp(1im * k * r² / (2 * lens.f))
   return ScalarField(field.U .* t, field.grid, field.λ)
 end
 
 function apply(lens::FourierLens, field::ScalarField) :: ScalarField
+  # Assumes waves are paraxial and the Fresnel approximation
   λ = field.λ
-  f = lens.f
+  k = 2π/λ
+  d = lens.d # Distance before lens
+  f = lens.f # Focal length of lens
+
+  X = field.grid.x'
+  Y = field.grid.y
 
   dx = field.grid.dx
   dy = field.grid.dy
   Nx = field.grid.Nx
   Ny = field.grid.Ny
  
-  kx = fftshift(fftfreq(Nx, 2π / dx))
-  ky = fftshift(fftfreq(Ny, 2π / dy))
+  fx = fftshift(fftfreq(Nx, 1 / dx))
+  fy = fftshift(fftfreq(Ny, 1 / dy))
 
-  x_out = (λ*f/(2π)) .* kx
-  y_out = (λ*f/(2π)) .* ky
+  x_out = (λ*f) .* fx
+  y_out = (λ*f) .* fy
 
-  prefactor = -1im / (λ * f) * dx * dy
+  hl = (1im/(λ*f)) * exp(-1im*k*(d+f)) * dx * dy
+  prefactor = @. hl * exp(1im*π*(X^2 + Y^2)*(d-f)/(λ*f^2))
 
   U_out = prefactor .* fftshift(fft(ifftshift(field.U)))
   grid_out = TransverseGrid(x_out, y_out)

@@ -37,24 +37,40 @@ Goodman, *Introduction to Fourier Optics*, 3rd ed., §3.10
 Saleh & Teich, *Fundamentals of Photonics*, 3rd ed., §4.4
 """
 function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
-    @assert z >= 0 "Propagation distance must be nonnegative"
+  @assert z >= 0 "Propagation distance must be nonnegative"
 
-    k  = 2π / field.λ
-    Nx = field.grid.Nx
-    Ny = field.grid.Ny
-    dx = field.grid.dx
-    dy = field.grid.dy
+  Nx = field.grid.Nx
+  Ny = field.grid.Ny
+  dx = field.grid.dx
+  dy = field.grid.dy
+  Lx = Nx*dx/2
+  Ly = Nx*dy/2
 
-    # Spatial frequency grids [rad/m]
-    # fftfreq returns frequencies in cycles/sample, multiply by 2π/dx for rad/m
-    kx = fftfreq(Nx, 2π / dx)'   # shape (1, Nx)
-    ky = fftfreq(Ny, 2π / dy)    # shape (Ny, 1)
+  fx = fftshift(fftfreq(Nx, 1/dx))'   # shape (1, Nx)
+  fy = fftshift(fftfreq(Ny, 1/dy))    # shape (Ny, 1)
+  #fx = collect(-1/(2dx):1/(2Lx):1/(2dx)-1/(2Lx))'
+  #fy = collect(-1/(2dy):1/(2Ly):1/(2dy)-1/(2Ly))
 
-    # Paraxial transfer function
-    H = @. exp(-1im * z * (kx^2 + ky^2) / (2k)) * exp(1im * k * z)
+  λ = field.λ
+  k = 2π/λ
 
-    # Angular spectrum propagation
-    E_propagated = ifft(fft(field.U) .* H)
+  kz² = @. (2π)^2 * (λ^-2 - fx^2 - fy^2)
+  kz = @. sqrt(kz²)
+  #kz[kz² .>= 0] = kz[kz² .>= 0]
+  #kz[kz² .< 0] = -1im*kz[kz² .< 0]
 
-    return ScalarField(E_propagated, field.grid, field.λ)
+  # Transfer function (Angular spectrum)
+  H = @. exp(-1im * kz * z)
+  
+  # Transfer function (Fresnel approximation)
+  #H = @. exp(-1im * k * z) * exp(1im*π*λ*z*(fx^2 + fy^2))
+ 
+  # Angular spectrum propagation
+  U = fft(field.U)
+  
+  U = fftshift(U)
+
+  E_propagated = ifft(ifftshift(U .* H))
+
+  return ScalarField(E_propagated, field.grid, field.λ)
 end
