@@ -47,7 +47,7 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   dx = field.grid.dx
   dy = field.grid.dy
   Lx = Nx*dx/2
-  Ly = Nx*dy/2
+  Ly = Ny*dy/2
 
   @assert dx>=λ*z/Lx "The H chirp is adequately sampled when dx>=λz/Lx"
   @assert dy>=λ*z/Ly "The H chirp is adequately sampled when dy>=λz/Ly"
@@ -59,11 +59,10 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   fx = fftshift(fftfreq(Nx, 1/dx))'   # shape (1, Nx)
   fy = fftshift(fftfreq(Ny, 1/dy))    # shape (Ny, 1)
 
-
   kz² = @. (2π)^2 * (λ^-2 - fx^2 - fy^2)
-  kz = @. sqrt(kz²)
-  #kz[kz² .>= 0] = kz[kz² .>= 0]
-  #kz[kz² .< 0] = -1im*kz[kz² .< 0]
+  kz = @. sqrt(abs(kz²))
+  kz[kz² .>= 0] = kz[kz² .>= 0]
+  kz[kz² .< 0] = 1im*kz[kz² .< 0]
 
   # Transfer function (Angular spectrum)
   H = @. exp(1im * kz * z)
@@ -72,11 +71,11 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   #H = @. exp(-1im * k * z) * exp(1im*π*λ*z*(fx^2 + fy^2))
  
   # Angular spectrum propagation
-  U = fft(field.U)
+  U = fft(ifftshift(field.U))
   
   U = fftshift(U)
 
-  E_propagated = ifft(ifftshift(U .* H))
+  E_propagated = fftshift(ifft(ifftshift(U .* H)))
 
   return ScalarField(E_propagated, field.grid, field.λ)
 end
