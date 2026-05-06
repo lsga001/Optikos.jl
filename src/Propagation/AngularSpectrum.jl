@@ -68,13 +68,11 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   H = @. exp(1im * kz * z)
   
   # Transfer function (Fresnel approximation)
-  #H = @. exp(-1im * k * z) * exp(1im*π*λ*z*(fx^2 + fy^2))
+  #H = @. exp(1im * k * z) * exp(-1im*π*λ*z*(fx^2 + fy^2))
  
   # Angular spectrum propagation
-  U = fft(ifftshift(field.U))
+  U = fftshift(fft(ifftshift(field.U)))
   
-  U = fftshift(U)
-
   E_propagated = fftshift(ifft(ifftshift(U .* H)))
 
   return ScalarField(E_propagated, field.grid, field.λ)

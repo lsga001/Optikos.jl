@@ -1,5 +1,5 @@
 """
-    propagate_fresnel(field::ScalarField, z::Float64) -> ScalarField
+    propagate_ssf(field::ScalarField, z::Float64) -> ScalarField
 
 Propagate a scalar field by distance `z` [m] using the Fresnel
 single-FFT method. The output grid scales with propagation distance,
@@ -32,44 +32,36 @@ or any field that would clip the grid edges with the angular spectrum method.
 # References
 Goodman, *Introduction to Fourier Optics*, 3rd ed., §4.2
 """
-function propagate_fresnel(field::ScalarField, z::Float64) :: ScalarField
-    @assert z > 0 "Propagation distance must be positive"
+function propagate_ssf(field::ScalarField, z::Float64) :: ScalarField
+  # TODO: Single-step Fresnel propagation
 
-    k  = 2π / field.λ
-    Nx = field.grid.Nx
-    Ny = field.grid.Ny
-    dx = field.grid.dx
-    dy = field.grid.dy
+  λ = field.λ
+  Nx = field.grid.Nx
+  Ny = field.grid.Ny
+  dx1 = field.grid.dx
+  dy1 = field.grid.dy
+  Lx1 = Nx*dx1
+  Ly1 = Ny*dy1
 
-    # Output grid spacing — scales with z
-    dx_out = field.λ * z / (Nx * dx)
-    dy_out = field.λ * z / (Ny * dy)
+  @assert dx1 <= λ*z/Lx1 "dx1 should satisfy dx <= λz/Lx"
+  @assert dy1 <= λ*z/Ly1 "dx1 should satisfy dx <= λz/Lx"
 
-    # Output grid coordinates
-    x_out = range(-(Nx÷2) * dx_out, (Nx÷2 - 1) * dx_out, length=Nx)
-    y_out = range(-(Ny÷2) * dy_out, (Ny÷2 - 1) * dy_out, length=Ny)
+  k = 2π / λ
+  dx2 = λ*z/(Nx*dx1)
+  dy2 = λ*z/(Ny*dy1)
 
-    # Input coordinates for quadratic phase
-    X_in = field.grid.x'
-    Y_in = field.grid.y
+  x1 = fftshift(fftfreq(Nx, Nx*dx1))
+  y1 = fftshift(fftfreq(Ny, Ny*dy1))
+  x2 = fftshift(fftfreq(Nx, Nx*dx2))
+  y2 = fftshift(fftfreq(Ny, Ny*dy2))
 
-    # Output coordinates for quadratic phase
-    X_out = x_out'
-    Y_out = y_out
+  Cz = (exp(1im*k*z)/(1im*λ*z))
+  quadratic_factor = @. exp(1im*π*(x1'^2 + y1^2)/(λ*z))
+  U = @. field.U * quadratic_factor
 
-    # Fresnel propagator — single FFT method
-    # 1. Multiply input by quadratic phase
-    quadratic_in = @. exp(1im * k / (2z) * (X_in^2 + Y_in^2))
+  U_out = Cz * fftshift(fft(ifftshift(U))) * dx1 * dy1
+  grid_out = TransverseGrid(x2, y2)
+  λ_out = λ
 
-    # 2. FFT
-    E_fft = fftshift(fft(ifftshift(field.U .* quadratic_in)))
-
-    # 3. Multiply by output quadratic phase and prefactor
-    prefactor = -1im / (field.λ * z) * exp(1im * k * z) * dx * dy
-    quadratic_out = @. exp(1im * k / (2z) * (X_out^2 + Y_out^2))
-
-    E_out = prefactor .* quadratic_out .* E_fft
-
-    new_grid = TransverseGrid(x_out, y_out)
-    return ScalarField(E_out, new_grid, field.λ)
+  return ScalarField(U_out, grid_out, λ_out)
 end
