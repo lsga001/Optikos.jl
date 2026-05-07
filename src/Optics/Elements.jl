@@ -4,8 +4,24 @@
 Propagates a field a distance z defined by `space::FreeSpace`.
 """
 function apply(space::FreeSpace, field::ScalarField) :: ScalarField
-  return propagate_angular(field, space.z)
-  #return propagate_fresnel(field, space.z)
+  λ = field.λ
+  Nx = field.grid.Nx
+  Ny = field.grid.Ny
+  dx = field.grid.dx
+  dy = field.grid.dy
+  Lx = Nx * dx
+  Ly = Ny * dy
+  z = space.z
+
+  if (dx >= λ*z / Lx) && (dy >= λ*z / Ly)
+    return propagate_angular(field, z)
+  elseif (dx <= λ*z / Lx) && (dy <= λ*z / Ly)
+    return propagate_ssf(field, z)
+  else
+    throw("x and y satisfy opposing critical sampling criteria")
+  end
+ 
+
   #grid_out = (space.grid_out !== missing) ? space.grid_out : field.grid
   #return propagate_bluestein(field, space.z, grid_out)
 end

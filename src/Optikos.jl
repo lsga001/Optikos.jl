@@ -65,7 +65,7 @@ export SphericalBeam, ParaboloidalBeam, GaussianBeam, LGBeam, HGBeam
 export grid, wavelength, intensity # Beams
 export evaluate                                     # Grid, Beam -> ScalarField
 
-export apply, propagate_angular, propagate_ssf, propagate_bluestein
+export apply, propagate_angular, propagate_ssf, propagate_dsf, propagate_bluestein
 
 export EnsembleIntensity
 export sample, ensemble_intensity  # Ensembles

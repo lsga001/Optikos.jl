@@ -46,8 +46,8 @@ function propagate_angular(field::ScalarField, z::Float64) :: ScalarField
   Ny = field.grid.Ny
   dx = field.grid.dx
   dy = field.grid.dy
-  Lx = Nx*dx/2
-  Ly = Ny*dy/2
+  Lx = Nx*dx
+  Ly = Ny*dy
 
   @assert dx>=λ*z/Lx "The H chirp is adequately sampled when dx>=λz/Lx"
   @assert dy>=λ*z/Ly "The H chirp is adequately sampled when dy>=λz/Ly"
