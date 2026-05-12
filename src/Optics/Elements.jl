@@ -13,10 +13,16 @@ function apply(space::FreeSpace, field::ScalarField) :: ScalarField
   Ly = Ny * dy
   z = space.z
 
+  m = space.grid_out.dx / dx
+
   if (dx >= λ*z / Lx) && (dy >= λ*z / Ly)
     return propagate_angular(field, z)
   elseif (dx <= λ*z / Lx) && (dy <= λ*z / Ly)
-    return propagate_ssf(field, z)
+    if space.grid_out !== missing
+      return propagate_dsf(field, z, m)
+    else
+      return propagate_ssf(field, z)
+    end
   else
     throw("x and y satisfy opposing critical sampling criteria")
   end
